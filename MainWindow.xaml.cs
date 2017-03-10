@@ -27,11 +27,17 @@ namespace WpfBarCode
             { "Code128B", "Code128B" },
             { "Code128C", "Code128C" },
         };
+
         public MainWindow()
         {
             InitializeComponent();
             codeTypeCombobox.DataContext = codeTypes;
             codeTypeCombobox.SelectedValue = "Code39";
+
+            var code = "1234567890";
+            var lists = new BarcodeEngine() { CodeType = "Code128A",BarWidth = 2 }.Generate(code);
+            var canvas = new czBarCodeCanvas(lists,50);
+            sp.Children.Add(canvas);
         }
 
         private void barWithSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -57,6 +63,41 @@ namespace WpfBarCode
         private void code39WideBarRateSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             barcode.Code39WideRate = e.NewValue;
+        }
+    }
+
+    public class czBarCodeCanvas : Canvas
+    {
+        private List<BarcodeItem> barCodeItems;
+        
+        public czBarCodeCanvas(List<BarcodeItem> barCodeItems,double height)
+        {
+            this.barCodeItems = barCodeItems;
+            this.Height = height;
+        }
+
+        protected override void OnRender(DrawingContext dc)
+        {
+            try
+            {
+                base.OnRender(dc);
+                czRender(dc);
+            }
+            catch (Exception ex)
+            {
+                //
+            }
+        }
+
+        private void czRender(DrawingContext dc)
+        {
+            double x = 0;
+            foreach (var bar in barCodeItems)
+            {
+                var rect = new Rect(x, 0, bar.Width, this.Height);
+                dc.DrawRectangle(bar.Color,null,rect);
+                x += bar.Width;
+            }
         }
     }
 }

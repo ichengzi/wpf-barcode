@@ -1,4 +1,3 @@
-# wpf-barcode
-WPF barcode control
+WPF绘制条码，Code39,Code128；可直接集成到项目
 
-![](http://www.coostone.com/upload/image/20160702/6360307524537109371169085.png)
+fork: https://github.com/KevinPan/wpf-barcode.git
